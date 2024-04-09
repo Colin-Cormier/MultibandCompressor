@@ -19,14 +19,28 @@ MultibandCompressorAudioProcessor::MultibandCompressorAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
 #endif
+apvts(*this, nullptr, "Params", createParams())
 {
 }
 
 MultibandCompressorAudioProcessor::~MultibandCompressorAudioProcessor()
 {
 }
+
+juce::AudioProcessorValueTreeState::ParameterLayout MultibandCompressorAudioProcessor::createParams()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"KNOB1", ParameterVersionHint}, "Threshold", -20.f, 0.f, 0.f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"BUTTON1", ParameterVersionHint}, "Auto", false));
+    
+    return {params.begin(), params.end()};
+    
+}
+
 
 //==============================================================================
 const juce::String MultibandCompressorAudioProcessor::getName() const

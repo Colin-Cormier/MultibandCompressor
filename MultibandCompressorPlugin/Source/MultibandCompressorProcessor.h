@@ -38,6 +38,17 @@ public:
     void setLowCrossOver(float x);
     float getLowCrossOver();
     
+    void setHighExponent(float x);
+    float getHighExponent();
+    
+    void setLowExponent(float x);
+    float getLowExponent();
+    
+    void setMidBandWidthChange(float x);
+    float getMidBandWidthChange() { return midBandWidthChange; }
+    
+    Compressor compressor;
+    
 private:
     
     float Fs = 48000.f;
@@ -51,9 +62,12 @@ private:
     
     Biquad LF; Biquad MF; Biquad HF;
     
-    float lowCrossOver = 200;
-    float highCrossOver = 2000;
+    float lowExponent = 2;  // >=1, <=4
+    float highExponent = 3; // >=1, <=4
     
-    Compressor compressor;
+    float midBandWidthChange = 0;
+    
+    float lowCrossOver;
+    float highCrossOver;
     
 };

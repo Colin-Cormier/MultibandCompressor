@@ -5,18 +5,20 @@
               jucerFormatVersion="1">
   <MAINGROUP id="qM0Un4" name="MultibandCompressor">
     <GROUP id="{397E5A5B-FC25-54A2-9AEF-A41F32390DDB}" name="Source">
-      <FILE id="T1akPP" name="MultibandCompressorProcessor.cpp" compile="1"
-            resource="0" file="Source/MultibandCompressorProcessor.cpp"/>
-      <FILE id="byDuTb" name="Biquad.cpp" compile="1" resource="0" file="Source/Biquad.cpp"/>
-      <FILE id="GOmdA3" name="Biquad.h" compile="0" resource="0" file="Source/Biquad.h"/>
-      <FILE id="F4mtd3" name="MultibandCompressorProcessor.h" compile="0"
-            resource="0" file="Source/MultibandCompressorProcessor.h"/>
+      <GROUP id="{6EACD889-A7EF-F0E0-B1F7-77CD0E9370F7}" name="DSP">
+        <FILE id="T1akPP" name="MultibandCompressorProcessor.cpp" compile="1"
+              resource="0" file="Source/MultibandCompressorProcessor.cpp"/>
+        <FILE id="F4mtd3" name="MultibandCompressorProcessor.h" compile="0"
+              resource="0" file="Source/MultibandCompressorProcessor.h"/>
+        <FILE id="byDuTb" name="Biquad.cpp" compile="1" resource="0" file="Source/Biquad.cpp"/>
+        <FILE id="GOmdA3" name="Biquad.h" compile="0" resource="0" file="Source/Biquad.h"/>
+        <FILE id="j0ksbd" name="Compressor.cpp" compile="1" resource="0" file="Source/Compressor.cpp"/>
+        <FILE id="HavF3g" name="Compressor.h" compile="0" resource="0" file="Source/Compressor.h"/>
+      </GROUP>
       <FILE id="k6CQvN" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="WkeW0m" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="j0ksbd" name="Compressor.cpp" compile="1" resource="0" file="Source/Compressor.cpp"/>
-      <FILE id="HavF3g" name="Compressor.h" compile="0" resource="0" file="Source/Compressor.h"/>
       <FILE id="oSqFUB" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="fG2gYe" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>

@@ -26,6 +26,8 @@ public:
     
     void setRelease(float x);
     
+    bool progDependent = false;
+    
 private:
     
     float threshold;
@@ -33,7 +35,5 @@ private:
     float attack;
     float release;
     float gainSmoothPrev[2] = {0.f};
-    
-    bool progDependent = false;
     
 };

@@ -32,6 +32,9 @@ float MultibandCompressorProcessor::multibandCompressor(float x, float Fs, float
     
     float y = 0;
     
+    lowCrossOver = 2 * pow(10,lowExponent);
+    highCrossOver = 2 * pow(10, highExponent);
+    
     //  split bands using 4th order filters
     
     LF.setFilterType(Biquad::LPF);
@@ -61,7 +64,7 @@ float MultibandCompressorProcessor::multibandCompressor(float x, float Fs, float
     
     float output = 0;
     
-    for ( int i = 0; i < sizeof(bands); ++i){
+    for ( int i = 0; i < sizeof(bands); ++i ){
         
         float band = bands[i];
         
@@ -119,4 +122,17 @@ void MultibandCompressorProcessor::setLowCrossOver(float x){
 }
 float MultibandCompressorProcessor::getLowCrossOver(){
     return lowCrossOver;
+}
+void MultibandCompressorProcessor::setHighExponent(float x){
+    highExponent = x;
+}
+
+void MultibandCompressorProcessor::setLowExponent(float x){
+    lowExponent = x;
+}
+
+void MultibandCompressorProcessor::setMidBandWidthChange(float x){
+    midBandWidthChange = x;
+    setLowExponent(lowExponent - x);
+    setHighExponent(highExponent + x);
 }
