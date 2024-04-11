@@ -13,20 +13,19 @@
 
 float MultibandCompressorProcessor::processSample(float x, int channel){
     
-    return multibandCompressor(x, Fs, threshold, ratio, attack, release, channel);
+    return multibandCompressor(x, channel);
 }
 
 void MultibandCompressorProcessor::process(float *buffer, int numSamples, int channel){
     
-    for(int i=0; i < numSamples; ++i){
+    for(int i = 0; i < numSamples; ++i){
         float x = buffer[i];
-        processSample(x, channel);
-        buffer[i] = x;
+        buffer[i] = processSample(x, channel);
     }
     
 }
 
-float MultibandCompressorProcessor::multibandCompressor(float x, float Fs, float thresh[], float ratio[], float attack[], float release[], int channel){
+float MultibandCompressorProcessor::multibandCompressor(float x, int channel){
     
     float bands[3] = {x};
     
@@ -37,28 +36,51 @@ float MultibandCompressorProcessor::multibandCompressor(float x, float Fs, float
     
     //  split bands using 4th order filters
     
-    LF.setFilterType(Biquad::LPF);
-    LF.setFreq(lowCrossOver);
-    LF.setQ(0.7071);
-    y = LF.processSample(x, channel);
-    bands[0] = LF.processSample(y, channel);
+        // Splits Low Band
+        
+        LF1.setFilterType(Biquad::LPF);
+        LF1.setFreq(lowCrossOver);
+        LF1.setQ(0.7071);
+        y = LF1.processSample(x, channel);
+        
+        LF2.setFilterType(Biquad::LPF);
+        LF2.setFreq(lowCrossOver);
+        LF2.setQ(0.7071);
+        bands[0] = LF2.processSample(y, channel);\
     
-    MF.setFilterType(Biquad::HPF);
-    MF.setFreq(lowCrossOver);
-    MF.setQ(0.7071);
-    y = MF.processSample(x, channel);
-    bands[1] = MF.processSample(y, channel);
+        // Splits Mid Band
+        
+        MF1.setFilterType(Biquad::HPF);
+        MF1.setFreq(lowCrossOver);
+        MF1.setQ(0.7071);
+        y = MF1.processSample(x, channel);
+        
+        MF2.setFilterType(Biquad::HPF);
+        MF2.setFreq(lowCrossOver);
+        MF2.setQ(0.7071);
+        bands[1] = MF2.processSample(y, channel);
+        
+        MF1.setFilterType(Biquad::LPF);
+        MF1.setFreq(highCrossOver);
+        MF1.setQ(0.7071);
+        y = MF1.processSample(x, channel);
+        
+        MF2.setFilterType(Biquad::LPF);
+        MF2.setFreq(highCrossOver);
+        MF2.setQ(0.7071);
+        bands[1] = MF2.processSample(y, channel);
     
-    MF.setFilterType(Biquad::LPF);
-    MF.setFreq(highCrossOver);
-    y = MF.processSample(x, channel);
-    bands[1] = MF.processSample(y, channel);
-    
-    HF.setFilterType(Biquad::HPF);
-    HF.setFreq(highCrossOver);
-    HF.setQ(0.7071);
-    y = HF.processSample(x, channel);
-    bands[2] = HF.processSample(y, channel);
+        // Splits High Band
+        
+        HF1.setFilterType(Biquad::HPF);
+        HF1.setFreq(highCrossOver);
+        HF1.setQ(0.7071);
+        y = HF1.processSample(x, channel);
+        
+        HF2.setFilterType(Biquad::HPF);
+        HF2.setFreq(highCrossOver);
+        HF2.setQ(0.7071);
+        bands[2] = HF2.processSample(y, channel);
     
     //  apply compression to each band
     
@@ -68,7 +90,7 @@ float MultibandCompressorProcessor::multibandCompressor(float x, float Fs, float
         
         float band = bands[i];
         
-        compressor.setThreshold(thresh[i]);
+        compressor.setThreshold(threshold[i]);
         compressor.setRatio(ratio[i]);
         compressor.setAttack(attack[i]);
         compressor.setRelease(release[i]);

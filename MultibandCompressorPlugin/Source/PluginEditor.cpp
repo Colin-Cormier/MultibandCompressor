@@ -32,7 +32,7 @@ MultibandCompressorAudioProcessorEditor::MultibandCompressorAudioProcessorEditor
     ratioSliderLow.addListener(this);
     
     attackSliderLow.setBounds(20, 146, 106, 106);
-    attackSliderLow.setRange(0, 0.1);
+    attackSliderLow.setRange(0.0, 0.1);
     attackSliderLow.setSkewFactorFromMidPoint(0.001);
     attackSliderLow.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     attackSliderLow.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
@@ -40,7 +40,7 @@ MultibandCompressorAudioProcessorEditor::MultibandCompressorAudioProcessorEditor
     attackSliderLow.addListener(this);
     
     releaseSliderLow.setBounds(146, 146, 106, 106);
-    releaseSliderLow.setRange(0, 5);
+    releaseSliderLow.setRange(0.0, 5.0);
     releaseSliderLow.setSkewFactorFromMidPoint(0.1);
     releaseSliderLow.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     releaseSliderLow.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
@@ -62,7 +62,7 @@ MultibandCompressorAudioProcessorEditor::MultibandCompressorAudioProcessorEditor
     ratioSliderMid.addListener(this);
     
     attackSliderMid.setBounds(292, 146, 106, 106);
-    attackSliderMid.setRange(0, 0.1);
+    attackSliderMid.setRange(0.0, 0.1);
     attackSliderMid.setSkewFactorFromMidPoint(0.001);
     attackSliderMid.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     attackSliderMid.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
@@ -70,7 +70,7 @@ MultibandCompressorAudioProcessorEditor::MultibandCompressorAudioProcessorEditor
     attackSliderMid.addListener(this);
     
     releaseSliderMid.setBounds(418, 146, 106, 106);
-    releaseSliderMid.setRange(0, 5);
+    releaseSliderMid.setRange(0.0, 5.0);
     releaseSliderMid.setSkewFactorFromMidPoint(0.1);
     releaseSliderMid.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     releaseSliderMid.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
@@ -92,7 +92,7 @@ MultibandCompressorAudioProcessorEditor::MultibandCompressorAudioProcessorEditor
     ratioSliderHigh.addListener(this);
     
     attackSliderHigh.setBounds(564, 146, 106, 106);
-    attackSliderHigh.setRange(0, 0.1);
+    attackSliderHigh.setRange(0.0, 0.1);
     attackSliderHigh.setSkewFactorFromMidPoint(0.001);
     attackSliderHigh.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     attackSliderHigh.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
@@ -100,14 +100,22 @@ MultibandCompressorAudioProcessorEditor::MultibandCompressorAudioProcessorEditor
     attackSliderHigh.addListener(this);
     
     releaseSliderHigh.setBounds(690, 146, 106, 106);
-    releaseSliderHigh.setRange(0, 5);
+    releaseSliderHigh.setRange(0.0, 5.0);
     releaseSliderHigh.setSkewFactorFromMidPoint(0.1);
     releaseSliderHigh.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     releaseSliderHigh.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
     addAndMakeVisible(releaseSliderHigh);
     releaseSliderHigh.addListener(this);
     
-    progDependentButton.setBounds(375, 300, 100, 20);
+    midBandWidthChange.setBounds(316, 262, 80, 80);
+    midBandWidthChange.setRange(-0.5, 1.0);
+    midBandWidthChange.setSkewFactorFromMidPoint(0);
+    midBandWidthChange.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    midBandWidthChange.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
+    addAndMakeVisible(midBandWidthChange);
+    midBandWidthChange.addListener(this);
+    
+    progDependentButton.setBounds(428, 290, 100, 20);
     progDependentButton.setButtonText("AUTO");
     progDependentButton.setToggleState(false, juce::dontSendNotification);
     addAndMakeVisible(progDependentButton);
@@ -146,7 +154,7 @@ void MultibandCompressorAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour(juce::Colours::grey);
     g.setOpacity(0.4);
     g.fillRoundedRectangle(20, 20, 232, 243, 10);
-    g.fillRoundedRectangle(292, 20, 232, 243, 10);
+    g.fillRoundedRectangle(292, 20, 232, 326, 10);
     g.fillRoundedRectangle(564, 20, 232, 243, 10);
     
     g.setColour(juce::Colours::white);
@@ -206,12 +214,24 @@ void MultibandCompressorAudioProcessorEditor::sliderValueChanged(juce::Slider *s
     if(slider == &releaseSliderHigh)
         audioProcessor.multibandCompressor.setRelease(releaseSliderHigh.getValue(), 2);
     
+    if(slider == &midBandWidthChange)
+        audioProcessor.multibandCompressor.setMidBandWidthChange(midBandWidthChange.getValue());
+    
 }
 
 void MultibandCompressorAudioProcessorEditor::buttonClicked(juce::Button *button)
 {
     if ( button == &progDependentButton){
         audioProcessor.multibandCompressor.compressor.progDependent = progDependentButton.getToggleState();
-        attackSliderLow.setEnabled(audioProcessor.multibandCompressor.compressor.progDependent);
+        
+        attackSliderLow.setEnabled(!audioProcessor.multibandCompressor.compressor.progDependent);
+        releaseSliderLow.setEnabled(!audioProcessor.multibandCompressor.compressor.progDependent);
+        
+        attackSliderMid.setEnabled(!audioProcessor.multibandCompressor.compressor.progDependent);
+        releaseSliderMid.setEnabled(!audioProcessor.multibandCompressor.compressor.progDependent);
+        
+        attackSliderHigh.setEnabled(!audioProcessor.multibandCompressor.compressor.progDependent);
+        releaseSliderHigh.setEnabled(!audioProcessor.multibandCompressor.compressor.progDependent);
+        
     }
 }

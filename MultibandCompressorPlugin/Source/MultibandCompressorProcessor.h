@@ -49,6 +49,8 @@ public:
     
     Compressor compressor;
     
+    float midBandWidthChange = 0; // -0.5 - 1
+    
 private:
     
     float Fs = 48000.f;
@@ -58,14 +60,12 @@ private:
     float attack[3];
     float release[3];
     
-    float multibandCompressor(float x, float Fs, float thresh[], float ratio[], float attack[], float release[], int channel);
+    float multibandCompressor(float x, int channel);
     
-    Biquad LF; Biquad MF; Biquad HF;
+    Biquad LF1, LF2, MF1, MF2, HF1, HF2;
     
     float lowExponent = 2;  // >=1, <=4
     float highExponent = 3; // >=1, <=4
-    
-    float midBandWidthChange = 0;
     
     float lowCrossOver;
     float highCrossOver;

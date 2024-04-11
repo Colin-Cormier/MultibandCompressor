@@ -61,8 +61,7 @@ void Compressor::process(float *buffer, int numSamples, float Fs, int channel){
     
     for(int i=0; i < numSamples; ++i){
         float x = buffer[i];
-        processSample(x, Fs, channel);
-        buffer[i] = x;
+        buffer[i] = processSample(x, Fs, channel);
     }
 }
 

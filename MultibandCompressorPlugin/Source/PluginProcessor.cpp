@@ -170,7 +170,7 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
         
         multibandCompressor.process(channelData, buffer.getNumSamples(), channel);
     }
-    
+     
 }
 
 //==============================================================================

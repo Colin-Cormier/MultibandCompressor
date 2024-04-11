@@ -51,6 +51,8 @@ private:
     juce::Slider releaseSliderMid;
     juce::Slider releaseSliderHigh;
     
+    juce::Slider midBandWidthChange;
+    
     juce::ToggleButton progDependentButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultibandCompressorAudioProcessorEditor)
