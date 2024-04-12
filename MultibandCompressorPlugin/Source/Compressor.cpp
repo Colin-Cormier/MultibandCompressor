@@ -26,7 +26,7 @@ float Compressor::processSample(float x, float Fs, int channel){
         x_dB = -96;
     
     if(x_dB > threshold)
-        gain = threshold + ( (x_dB - threshold)/ratio );\
+        gain = threshold + ( (x_dB - threshold) / ratio );
     else
         gain = x_dB;
     

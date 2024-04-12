@@ -62,7 +62,7 @@ private:
     
     float multibandCompressor(float x, int channel);
     
-    Biquad LF1, LF2, MF1, MF2, HF1, HF2;
+    Biquad LF1, LF2, MF1, MF2, MF3, MF4, HF1, HF2;
     
     float lowExponent = 2;  // >=1, <=4
     float highExponent = 3; // >=1, <=4

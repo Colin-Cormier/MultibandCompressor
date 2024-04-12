@@ -30,7 +30,7 @@ public:
     
 private:
     
-    float threshold;
+    float threshold = -10.f;
     float ratio;
     float attack;
     float release;

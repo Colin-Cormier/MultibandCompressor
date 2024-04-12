@@ -56,6 +56,42 @@ public:
 
     juce::AudioProcessorValueTreeState apvts;
     
+    static const juce::StringRef s_lowThresh;
+    
+    static const juce::StringRef s_lowRatio;
+    
+    static const juce::StringRef s_lowAttack;
+    
+    static const juce::StringRef s_lowRelease;
+    
+    static const juce::StringRef s_midThresh;
+    
+    static const juce::StringRef s_midRatio;
+    
+    static const juce::StringRef s_midAttack;
+    
+    static const juce::StringRef s_midRelease;
+    
+    static const juce::StringRef s_midBandWidth;
+    
+    static const juce::StringRef s_highThresh;
+    
+    static const juce::StringRef s_highRatio;
+    
+    static const juce::StringRef s_highAttack;
+    
+    static const juce::StringRef s_highRelease;
+    
+    static const juce::StringRef s_progDepend;
+    
+    
+    void threshChanged(float value, int channel);
+    void ratioChanged(float value, int channel);
+    void attackChanged(float value, int channel);
+    void releaseChanged(float value, int channel);
+    void midBandWidthChanged(float value);
+    void progDependClicked(bool value);
+    
     MultibandCompressorProcessor multibandCompressor;
 
 private:
@@ -63,6 +99,7 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
     
     int ParameterVersionHint = 1;
+    
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultibandCompressorAudioProcessor)

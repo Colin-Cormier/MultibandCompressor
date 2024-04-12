@@ -14,21 +14,22 @@
 //==============================================================================
 /**
 */
-class MultibandCompressorAudioProcessorEditor  : public juce::AudioProcessorEditor,
-                                                    public juce::Slider::Listener,
-                                                    public juce::Button::Listener
+class MultibandCompressorAudioProcessorEditor  : public juce::AudioProcessorEditor
+                                                   
     
 {
 public:
     MultibandCompressorAudioProcessorEditor (MultibandCompressorAudioProcessor&);
     ~MultibandCompressorAudioProcessorEditor() override;
+    
+    using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+    
+    using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
     
-    void sliderValueChanged(juce::Slider* slider) override;
-    void buttonClicked(juce::Button *button) override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -54,6 +55,9 @@ private:
     juce::Slider midBandWidthChange;
     
     juce::ToggleButton progDependentButton;
-
+    
+    std::vector <std::unique_ptr <SliderAttachment>> sliderAttachments;
+    std::vector <std::unique_ptr <ButtonAttachment>> buttonAttachments;
+                                 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultibandCompressorAudioProcessorEditor)
 };

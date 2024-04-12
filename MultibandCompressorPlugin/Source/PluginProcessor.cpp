@@ -9,6 +9,24 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+const juce::StringRef MultibandCompressorAudioProcessor::s_lowThresh = "low_KNOB1";
+const juce::StringRef MultibandCompressorAudioProcessor::s_lowRatio = "low_KNOB2";
+const juce::StringRef MultibandCompressorAudioProcessor::s_lowAttack = "low_KNOB3";
+const juce::StringRef MultibandCompressorAudioProcessor::s_lowRelease = "low_KNOB4";
+
+const juce::StringRef MultibandCompressorAudioProcessor::s_midThresh = "mid_KNOB1";
+const juce::StringRef MultibandCompressorAudioProcessor::s_midRatio = "mid_KNOB2";
+const juce::StringRef MultibandCompressorAudioProcessor::s_midAttack = "mid_KNOB3";
+const juce::StringRef MultibandCompressorAudioProcessor::s_midRelease = "mid_KNOB4";
+const juce::StringRef MultibandCompressorAudioProcessor::s_midBandWidth = "mid_KNOB5";
+
+const juce::StringRef MultibandCompressorAudioProcessor::s_highThresh = "high_KNOB1";
+const juce::StringRef MultibandCompressorAudioProcessor::s_highRatio = "high_KNOB2";
+const juce::StringRef MultibandCompressorAudioProcessor::s_highAttack = "high_KNOB3";
+const juce::StringRef MultibandCompressorAudioProcessor::s_highRelease = "high_KNOB4";
+
+const juce::StringRef MultibandCompressorAudioProcessor::s_progDepend = "BUTTON1";
+
 //==============================================================================
 MultibandCompressorAudioProcessor::MultibandCompressorAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -33,9 +51,23 @@ juce::AudioProcessorValueTreeState::ParameterLayout MultibandCompressorAudioProc
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{"KNOB1", ParameterVersionHint}, "Threshold", -20.f, 0.f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_lowThresh, ParameterVersionHint}, "Low Threshold", -96.f, 0.f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_lowRatio, ParameterVersionHint}, "Low Ratio", 1.f, 20.f, 1.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_lowAttack, ParameterVersionHint}, "Low Attack", 0.f, 0.1f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_lowRelease, ParameterVersionHint}, "Low Release", 0.f, 5.f, 0.f));
     
-    params.push_back(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"BUTTON1", ParameterVersionHint}, "Auto", false));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midThresh, ParameterVersionHint}, "Mid Threshold", -96.f, 0.f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midRatio, ParameterVersionHint}, "Mid Ratio", 1.f, 20.f, 1.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midAttack, ParameterVersionHint}, "Mid Attack", 0.f, 0.1f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midRelease, ParameterVersionHint}, "Mid Release", 0.f, 5.f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midBandWidth, ParameterVersionHint}, "Mid Bandwidth", -0.5f, 1.f, 0.f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_highThresh, ParameterVersionHint}, "High Threshold", -96.f, 0.f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_highRatio, ParameterVersionHint}, "High Ratio", 1.f, 20.f, 1.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_highAttack, ParameterVersionHint}, "High Attack", 0.f, 0.1f, 0.f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_highRelease, ParameterVersionHint}, "High Release", 0.f, 5.f, 0.f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{s_progDepend, ParameterVersionHint}, "Auto", false));
     
     return {params.begin(), params.end()};
     
@@ -149,21 +181,14 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
+
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    //float knobVal = *apvts.getRawParameterValue(s_lowThresh);
+    
+    //bool buttonVal = *apvts.getRawParameterValue(s_progDepend) > 0.5f ? true : false;
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
@@ -198,8 +223,37 @@ void MultibandCompressorAudioProcessor::setStateInformation (const void* data, i
     // whose contents will have been created by the getStateInformation() call.
 }
 
-//==============================================================================
-// This creates new instances of the plugin..
+
+
+
+void MultibandCompressorAudioProcessor::threshChanged(float value, int channel){
+    multibandCompressor.setThreshold(value, channel);
+}
+
+void MultibandCompressorAudioProcessor::ratioChanged(float value, int channel){
+    multibandCompressor.setRatio(value, channel);
+}
+
+void MultibandCompressorAudioProcessor::attackChanged(float value, int channel){
+    multibandCompressor.setAttack(value, channel);
+}
+
+void MultibandCompressorAudioProcessor::releaseChanged(float value, int channel){
+    multibandCompressor.setRelease(value, channel);
+}
+
+void MultibandCompressorAudioProcessor::midBandWidthChanged(float value){
+    multibandCompressor.setMidBandWidthChange(value);
+}
+
+void MultibandCompressorAudioProcessor::progDependClicked(bool value){
+    multibandCompressor.compressor.progDependent = value;
+    
+}
+
+
+
+
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new MultibandCompressorAudioProcessor();
