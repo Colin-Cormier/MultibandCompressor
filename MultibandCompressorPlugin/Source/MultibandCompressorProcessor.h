@@ -38,36 +38,36 @@ public:
     void setLowCrossOver(float x);
     float getLowCrossOver();
     
-    void setHighExponent(float x);
-    float getHighExponent();
+    void setHighExponent(double x);
+    double getHighExponent();
     
-    void setLowExponent(float x);
-    float getLowExponent();
+    void setLowExponent(double x);
+    double getLowExponent();
     
-    void setMidBandWidthChange(float x);
-    float getMidBandWidthChange() { return midBandWidthChange; }
+    void setFs(float sampleRate) { Fs = sampleRate; }
+    
+    void setMidBandWidthChange(double x);
+    double getMidBandWidthChange() { return midBandWidthChange; }
     
     Compressor compressor;
     
-    float midBandWidthChange = 0; // -0.5 - 1
+    double midBandWidthChange = 0.0; // -0.5 - 1
     
 private:
     
     float Fs = 48000.f;
     
-    float threshold[3];
+    float threshold[3] = {0.f};
     float ratio[3];
-    float attack[3];
-    float release[3];
-    
-    float multibandCompressor(float x, int channel);
+    float attack[3] = {0.f};
+    float release[3] = {0.f};
     
     Biquad LF1, LF2, MF1, MF2, MF3, MF4, HF1, HF2;
     
-    float lowExponent = 2;  // >=1, <=4
-    float highExponent = 3; // >=1, <=4
+    double lowExponent = 2.0;  // >=1, <=4
+    double highExponent = 3.0; // >=1, <=4
     
-    float lowCrossOver;
-    float highCrossOver;
+    float lowCrossOver = 20.f;
+    float highCrossOver = 2000.f;
     
 };

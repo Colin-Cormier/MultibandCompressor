@@ -15,12 +15,11 @@
 float Compressor::processSample(float x, float Fs, int channel){
     
     float x_abs = abs(x);
-    float x_dB = 20 * log10(x_abs);
-    float gain = 0;
+    float x_dB = 20.f * log10(x_abs);
+    float gain = 0.f;
     float linearAmp;
-    float alphaAttack = exp(-log(9)/Fs * attack);
-    float alphaRelease = exp(-log(9)/Fs * release);
-    float gainSmooth = 0;
+    
+    float gainSmooth = 0.f;
     
     if(x_dB < -96)
         x_dB = -96;
@@ -32,14 +31,15 @@ float Compressor::processSample(float x, float Fs, int channel){
     
     float gainChange = gain - x_dB;
     
-    if(progDependent){
-        attack = 1.f / (-gainSmoothPrev[channel] + 0.5f);
-        alphaAttack = exp(-log(9.f) / (Fs * attack));
+    if(progDependent == true){
         
+        attack = 1.f / (-gainSmoothPrev[channel] + 0.5f);
         release = 1.f / (-gainSmoothPrev[channel] + 0.2f);
-        alphaRelease = exp(-log(9.f) / (Fs * release));
+        
     }
     
+    float alphaAttack = exp(-log(9.f) / (Fs * attack));
+    float alphaRelease = exp(-log(9.f) / (Fs * release));
     
     if(gainChange < gainSmoothPrev[channel])
         
@@ -50,7 +50,7 @@ float Compressor::processSample(float x, float Fs, int channel){
         gainSmooth = ( (1-alphaRelease) * gainChange ) + (alphaRelease * gainSmoothPrev[channel]);
     
     
-    linearAmp = (float) pow(10, (double) gainSmooth/20);
+    linearAmp = (float) pow(10.0,(double)(gainSmooth/20));
     
     gainSmoothPrev[channel] = gainSmooth;
     

@@ -139,8 +139,11 @@ void MultibandCompressorAudioProcessor::changeProgramName (int index, const juce
 //==============================================================================
 void MultibandCompressorAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    multibandCompressor.setFs(sampleRate);
+    
+    for(int i=0; i<3; i++){
+        multibandCompressor.setRatio(1.f, i);
+    }
 }
 
 void MultibandCompressorAudioProcessor::releaseResources()
@@ -185,15 +188,13 @@ void MultibandCompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    //float knobVal = *apvts.getRawParameterValue(s_lowThresh);
-    
-    //bool buttonVal = *apvts.getRawParameterValue(s_progDepend) > 0.5f ? true : false;
+    auto numSamples = buffer.getNumSamples();
 
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
         
-        multibandCompressor.process(channelData, buffer.getNumSamples(), channel);
+        multibandCompressor.process(channelData, numSamples, channel);
     }
      
 }
@@ -215,12 +216,26 @@ void MultibandCompressorAudioProcessor::getStateInformation (juce::MemoryBlock& 
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
+    auto currentState = apvts.copyState();
+    
+    std::unique_ptr<juce::XmlElement> xml (currentState.createXml());
+    
+    copyXmlToBinary(*xml, destData);
+    
 }
 
 void MultibandCompressorAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    
+    std::unique_ptr<juce::XmlElement> xml (getXmlFromBinary(data, sizeInBytes));
+    
+    juce::ValueTree newTree = juce::ValueTree::fromXml(*xml);
+    
+    apvts.replaceState(newTree);
+    
 }
 
 
@@ -242,7 +257,7 @@ void MultibandCompressorAudioProcessor::releaseChanged(float value, int channel)
     multibandCompressor.setRelease(value, channel);
 }
 
-void MultibandCompressorAudioProcessor::midBandWidthChanged(float value){
+void MultibandCompressorAudioProcessor::midBandWidthChanged(double value){
     multibandCompressor.setMidBandWidthChange(value);
 }
 

@@ -89,10 +89,10 @@ public:
     void ratioChanged(float value, int channel);
     void attackChanged(float value, int channel);
     void releaseChanged(float value, int channel);
-    void midBandWidthChanged(float value);
+    void midBandWidthChanged(double value);
     void progDependClicked(bool value);
     
-    MultibandCompressorProcessor multibandCompressor;
+    
 
 private:
     
@@ -100,6 +100,7 @@ private:
     
     int ParameterVersionHint = 1;
     
+    MultibandCompressorProcessor multibandCompressor;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultibandCompressorAudioProcessor)

@@ -14,7 +14,12 @@
 void MultibandCompressorProcessor::process(float *buffer, int numSamples, int channel){
     
     for(int i = 0; i < numSamples; ++i){
+        
         float x = buffer[i];
+        
+        lowCrossOver = (float) (2.0 * pow(10.0,lowExponent));
+        highCrossOver = (float) (2.0 * pow(10.0,highExponent));
+        
         buffer[i] = processSample(x, channel);
     }
     
@@ -22,14 +27,20 @@ void MultibandCompressorProcessor::process(float *buffer, int numSamples, int ch
 
 float MultibandCompressorProcessor::processSample(float x, int channel){
     
-    float bands[3] = {x};
+    int numBands = 3;
+    
+    float bands[numBands];
+    
+    for(int i=0; i < numBands; ++i){
+        bands[i] = x;
+    }
+    
     
     float a = 0;
     float b = 0;
     float c = 0;
     
-    lowCrossOver = 2 * pow(10,lowExponent);
-    highCrossOver = 2 * pow(10, highExponent);
+    
     
     //  split bands using 4th order filters
     
@@ -43,7 +54,7 @@ float MultibandCompressorProcessor::processSample(float x, int channel){
         LF2.setFilterType(Biquad::LPF);
         LF2.setFreq(lowCrossOver);
         LF2.setQ(0.7071);
-        bands[0] = LF2.processSample(a, channel);\
+        bands[0] = LF2.processSample(a, channel);
     
         // Splits Mid Band
         
@@ -65,7 +76,7 @@ float MultibandCompressorProcessor::processSample(float x, int channel){
         MF4.setFilterType(Biquad::LPF);
         MF4.setFreq(highCrossOver);
         MF4.setQ(0.7071);
-        bands[1] += MF4.processSample(c, channel);
+        bands[1] = MF4.processSample(c, channel);
     
         // Splits High Band
         
@@ -83,7 +94,7 @@ float MultibandCompressorProcessor::processSample(float x, int channel){
     
     float output = 0;
     
-    for ( int i = 0; i < 3; ++i ){
+    for ( int i = 0; i < numBands; ++i ){
         
         float band = bands[i];
         
@@ -145,16 +156,18 @@ void MultibandCompressorProcessor::setLowCrossOver(float x){
 float MultibandCompressorProcessor::getLowCrossOver(){
     return lowCrossOver;
 }
-void MultibandCompressorProcessor::setHighExponent(float x){
+void MultibandCompressorProcessor::setHighExponent(double x){
     highExponent = x;
 }
 
-void MultibandCompressorProcessor::setLowExponent(float x){
+void MultibandCompressorProcessor::setLowExponent(double x){
     lowExponent = x;
 }
 
-void MultibandCompressorProcessor::setMidBandWidthChange(float x){
+void MultibandCompressorProcessor::setMidBandWidthChange(double x){
+    
     midBandWidthChange = x;
     setLowExponent(lowExponent - x);
     setHighExponent(highExponent + x);
+    
 }

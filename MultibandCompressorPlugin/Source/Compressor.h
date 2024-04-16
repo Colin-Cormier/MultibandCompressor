@@ -30,10 +30,10 @@ public:
     
 private:
     
-    float threshold = -10.f;
-    float ratio;
-    float attack;
-    float release;
+    float threshold = 0.f;
+    float ratio = 1.f;
+    float attack = 0.f;
+    float release = 0.f;
     float gainSmoothPrev[2] = {0.f};
     
 };
