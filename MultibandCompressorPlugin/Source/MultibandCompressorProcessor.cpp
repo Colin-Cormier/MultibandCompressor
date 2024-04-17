@@ -35,12 +35,9 @@ float MultibandCompressorProcessor::processSample(float x, int channel){
         bands[i] = x;
     }
     
-    
     float a = 0;
     float b = 0;
     float c = 0;
-    
-    
     
     //  split bands using 4th order filters
     
@@ -109,9 +106,6 @@ float MultibandCompressorProcessor::processSample(float x, int channel){
     
     return output;
 }
-
-
-
 
 // Get and Set Methods
 

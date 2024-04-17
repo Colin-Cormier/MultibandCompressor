@@ -60,7 +60,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout MultibandCompressorAudioProc
     params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midRatio, ParameterVersionHint}, "Mid Ratio", 1.f, 20.f, 1.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midAttack, ParameterVersionHint}, "Mid Attack", 0.f, 0.1f, 0.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midRelease, ParameterVersionHint}, "Mid Release", 0.f, 5.f, 0.f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midBandWidth, ParameterVersionHint}, "Mid Bandwidth", -0.5f, 1.f, 0.f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_midBandWidth, ParameterVersionHint}, "Mid Bandwidth", -0.5, 1.0, 0.0));
     
     params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_highThresh, ParameterVersionHint}, "High Threshold", -96.f, 0.f, 0.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{s_highRatio, ParameterVersionHint}, "High Ratio", 1.f, 20.f, 1.f));
