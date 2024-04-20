@@ -51,7 +51,7 @@ public:
     
     Compressor compressor;
     
-    double midBandWidthChange = 0.0; // -0.5 - 1
+    double midBandWidthChange = 0.0; // -0.5 - 1.0
     
 private:
     

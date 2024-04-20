@@ -33,7 +33,7 @@ float Compressor::processSample(float x, float Fs, int channel){
     
     if(progDependent == true){
         
-        attack = 1.f / (-gainSmoothPrev[channel] + 0.5f);
+        attack = 1.f / (-gainSmoothPrev[channel] + 1.f);
         release = 1.f / (-gainSmoothPrev[channel] + 0.2f);
         
     }

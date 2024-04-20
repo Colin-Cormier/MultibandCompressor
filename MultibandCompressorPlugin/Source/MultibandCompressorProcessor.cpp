@@ -22,12 +22,11 @@ void MultibandCompressorProcessor::process(float *buffer, int numSamples, int ch
         
         buffer[i] = processSample(x, channel);
     }
-    
 }
 
 float MultibandCompressorProcessor::processSample(float x, int channel){
     
-    int numBands = 3;
+    const int numBands = 3;
     
     float bands[numBands];
     
@@ -161,7 +160,8 @@ void MultibandCompressorProcessor::setLowExponent(double x){
 void MultibandCompressorProcessor::setMidBandWidthChange(double x){
     
     midBandWidthChange = x;
-    setLowExponent(lowExponent - x);
-    setHighExponent(highExponent + x);
+    
+    setLowExponent(2 - x);
+    setHighExponent(3 + x);
     
 }
